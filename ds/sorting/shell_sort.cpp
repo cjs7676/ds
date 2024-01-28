@@ -1,0 +1,38 @@
+#include<iostream>
+#include<conio.h>
+using namespace std;
+
+void printarray(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+void shell_sort(int arr[], int n) {
+    for (int gap = n / 2; gap > 0; gap /= 2) {
+        for (int i = gap; i < n; i++) {
+            int temp = arr[i];
+            int j;
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                arr[j] = arr[j - gap];
+            }
+            arr[j] = temp;
+        }
+    }
+}
+
+int main() {
+    int arr[] = {61, 44, 52, 28, 32, 64};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    
+    cout << "Array before sorting:\n";
+    printarray(arr, n);
+    
+    shell_sort(arr, n);
+    
+    cout << "\nArray after sorting:\n";
+    printarray(arr, n);
+
+    return 0;
+}

@@ -1,0 +1,126 @@
+
+#include <iostream>
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+class CircularQueue {
+private:
+    Node* front;
+    Node* rear;
+    int size;
+    int count; // Adding a count to keep track of the number of elements
+
+public:
+    CircularQueue(int capacity) {
+        front = nullptr;
+        rear = nullptr;
+        size = capacity;
+        count = 0; // Initialize count to 0
+    }
+
+    bool isEmpty() {
+        return front == nullptr;
+    }
+
+    bool isFull() {
+        return count == size; // Check if the count equals size
+    }
+
+    void enqueue(int data) {
+        if (isFull()) {
+            std::cout << "Queue is full" << std::endl;
+            return;
+        }
+
+        Node* newNode = new Node{data, nullptr};
+
+        if (isEmpty()) {
+            front = newNode;
+        } else {
+            rear->next = newNode;
+        }
+
+        rear = newNode;
+        rear->next = front; // Making the queue circular
+
+        count++; // Increment count after adding an element
+    }
+
+    int dequeue() {
+        if (isEmpty()) {
+            std::cout << "Queue is empty" << std::endl;
+            return -1;
+        }
+
+        int data = front->data;
+        Node* temp = front;
+
+        if (front == rear) {
+            front = nullptr;
+            rear = nullptr;
+        } else {
+            front = front->next;
+            rear->next = front; // Rear's next should point to the new front for circularity
+        }
+
+        delete temp;
+        count--; // Decrement count after removing an element
+        return data;
+    }
+
+    int frontElement() {
+        if (isEmpty()) {
+            std::cout << "Queue is empty" << std::endl;
+            return -1;
+        }
+
+        return front->data;
+    }
+
+    void display() {
+        if (isEmpty()) {
+            std::cout << "Queue is empty" << std::endl;
+            return;
+        }
+
+        Node* temp = front;
+        do {
+            std::cout << temp->data << " ";
+            temp = temp->next;
+        } while (temp != front);
+
+        std::cout << std::endl;
+    }
+};
+
+int main() {
+    CircularQueue queue(5);
+
+    queue.enqueue(10);
+    queue.enqueue(20);
+    queue.enqueue(30);
+    queue.enqueue(40);
+    queue.enqueue(50);
+
+    std::cout << "Queue elements: ";
+    queue.display();
+
+    std::cout << "Front element: " << queue.frontElement() << std::endl;
+
+    queue.dequeue();
+    queue.dequeue();
+
+    std::cout << "Queue elements after dequeuing: ";
+    queue.display();
+
+    queue.enqueue(60);
+    queue.enqueue(70);
+
+    std::cout << "Queue elements after enqueueing: ";
+    queue.display();
+
+    return 0;
+}

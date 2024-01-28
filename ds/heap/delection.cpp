@@ -1,0 +1,133 @@
+///// Delete
+
+
+
+#include <iostream>
+
+class Node {
+public:
+    int data;
+    Node* next;
+
+    Node(int value) : data(value), next(nullptr) {}
+};
+
+class MinHeap {
+private:
+    Node* root;
+
+    Node* insert(Node* root, int value) {
+        if (root == nullptr) {
+            return new Node(value);
+        }
+
+        if (value < root->data) {
+            Node* newNode = new Node(value);
+            newNode->next = root;
+            return newNode;
+        }
+
+        root->next = insert(root->next, value);
+
+        if (root->next != nullptr && root->next->data < root->data) {
+            std::swap(root->data, root->next->data);
+        }
+
+        return root;
+    }
+
+    void reheapup(Node* currentNode) {
+        if (currentNode->next != nullptr && currentNode->next->data < currentNode->data) {
+            std::swap(currentNode->data, currentNode->next->data);
+            reheapup(currentNode->next);
+        }
+    }
+
+    Node* deleteMin(Node* root) {
+        if (root == nullptr) {
+            return nullptr;
+        }
+
+        Node* temp = root;
+        root = root->next;
+        delete temp;
+
+        reheapdown(root);
+
+        return root;
+    }
+
+    void reheapdown(Node* root) {
+        if (root == nullptr || root->next == nullptr) {
+            return;
+        }
+
+        Node* minChild = nullptr;
+
+        if (root->next->next != nullptr && root->next->data > root->next->next->data) {
+            minChild = root->next->next;
+        } else {
+            minChild = root->next;
+        }
+
+        if (minChild != nullptr && minChild->data < root->data) {
+            std::swap(root->data, minChild->data);
+            reheapdown(minChild);
+        }
+    }
+
+public:
+    MinHeap() : root(nullptr) {}
+
+    void insert(int value) {
+        root = insert(root, value);
+        reheapup(root);
+    }
+
+    void printHeap(Node* root) {
+        if (root != nullptr) {
+            printHeap(root->next);
+            std::cout << root->data << " ";
+        }
+    }
+
+    void printHeap() {
+        printHeap(root);
+        std::cout << std::endl;
+    }
+
+    void performReheapup() {
+        if (root != nullptr) {
+            reheapup(root);
+        }
+    }
+
+    void performDeleteMin() {
+        root = deleteMin(root);
+    }
+};
+
+int main() {
+    MinHeap minHeap;
+
+    int numElements;
+    std::cout << "";
+    std::cout << "Enter the number of elements: ";
+    std::cin >> numElements;
+
+    for (int i = 0; i < numElements; ++i) {
+        int element;
+        std::cout << "Enter element " << i + 1 << ": ";
+        std::cin >> element;
+        minHeap.insert(element);
+    }
+
+    std::cout << "Min Heap: ";
+    minHeap.printHeap();
+
+    minHeap.performDeleteMin();
+    std::cout << "Heap after deleting the minimum element: ";
+    minHeap.printHeap();
+
+    return 0;
+}
