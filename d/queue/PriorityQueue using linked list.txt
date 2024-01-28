@@ -1,0 +1,115 @@
+#include <iostream>
+using namespace std;
+
+
+class Node {
+public:
+    int data;
+    int priority;
+    Node *next;
+
+    Node(int data, int priority) {
+        this->data = data;
+        this->priority = priority;
+        next = nullptr;
+    }
+};
+
+class PriorityQueue {
+private:
+    Node *head;
+
+public:
+    PriorityQueue() {
+        head = nullptr;
+    }
+
+    bool isEmpty() {
+        return head == nullptr;
+    }
+
+    void enqueue(int data, int priority) {
+        Node *newNode = new Node(data, priority);
+
+        if (isEmpty()) {
+            head = newNode;
+            return;
+        }
+
+        if (newNode->priority > head->priority) {
+            newNode->next = head;
+            head = newNode;
+            return;
+        }
+
+        Node *temp = head;
+        while (temp->next != nullptr && temp->next->priority >= newNode->priority) {
+            temp = temp->next;
+        }
+
+        newNode->next = temp->next;
+        temp->next = newNode;
+    }
+
+    int dequeue() {
+        if (isEmpty()) {
+            cout << "Queue is empty" << endl;
+            return -1;
+        }
+
+        int data = head->data;
+        Node *temp = head;
+        head = head->next;
+        delete temp;
+
+        return data;
+    }
+
+    int frontElement() {
+        if (isEmpty()) {
+            cout << "Queue is empty" << endl;
+            return -1;
+        }
+
+        return head->data;
+    }
+
+    void display() {
+        if (isEmpty()) {
+            cout << "Queue is empty" << endl;
+            return;
+        }
+
+        Node *temp = head;
+        while (temp != nullptr) {
+            cout << temp->data << "(" << temp->priority << ")" << " ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+};
+int main() {
+    PriorityQueue priorityQueue;
+
+    // Enqueue elements with priority
+    priorityQueue.enqueue(30, 3);
+    priorityQueue.enqueue(50, 5);
+    priorityQueue.enqueue(10, 1);
+    priorityQueue.enqueue(20, 2);
+
+    // Display the priority queue
+    cout << "Priority Queue: ";
+    priorityQueue.display();
+
+    // Dequeue an element
+    cout << "Dequeued element: " << priorityQueue.dequeue() << endl;
+
+    // Display the queue after dequeue
+    cout << "Queue after dequeue: ";
+    priorityQueue.display();
+
+    // Front element of the queue
+    cout << "Front element: " << priorityQueue.frontElement() << endl;
+
+    return 0;
+}

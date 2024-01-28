@@ -1,0 +1,107 @@
+/////Reheapdown
+#include <iostream>
+
+class Node {
+public:
+    int data;
+    Node* next;
+
+    Node(int value) : data(value), next(NULL) {}
+};
+
+class MaxHeap {
+private:
+    Node* root;
+
+    Node* insert(Node* root, int value) {
+        if (root == NULL) {
+            return new Node(value);
+        }
+
+        if (value < root->data) {
+            Node* newNode = new Node(value);
+            newNode->next = root;
+            return newNode;
+        }
+
+        root->next = insert(root->next, value);
+
+       
+        if (root->next != NULL && root->next->data < root->data) {
+            std::swap(root->data, root->next->data);
+        }
+
+        return root;
+    }
+
+   
+    void reheapup(Node* currentNode) {
+        if (currentNode->next != NULL && currentNode->next->data < currentNode->data) {
+            std::swap(currentNode->data, currentNode->next->data);
+            reheapup(currentNode->next);
+        }
+    }
+
+public:
+    MaxHeap() : root(NULL) {}
+
+    void insert(int value) {
+        root = insert(root, value);
+    }
+
+    void printHeap(Node* root) {
+        if (root != NULL) {
+            printHeap(root->next);
+            std::cout << root->data << " ";
+        }
+    }
+
+    void printHeap() {
+        printHeap(root);
+        std::cout << std::endl;
+    }
+
+ 
+    void performReheapup() {
+        if (root != NULL) {
+            reheapup(root);
+        }
+    }
+};
+
+int main() {
+	
+    MaxHeap maxHeap;
+
+    int numElements;
+      std::cout << "";
+    std::cout << "\n Enter the number of elements: ";
+    std::cin >> numElements;
+
+    for (int i = 0; i < numElements; ++i) {
+        int element;
+        std::cout << "Enter element " << i + 1 << ": ";
+        std::cin >> element;
+        maxHeap.insert(element);
+    }
+
+    std::cout << "Min Heap: ";
+    maxHeap.printHeap();
+   
+
+   
+    int newElement;
+    std::cout << "Enter a new element to insert into the min heap: ";
+    std::cin >> newElement;
+
+    maxHeap.insert(newElement);
+    std::cout << "Heap after inserting " << newElement << ": ";
+    maxHeap.printHeap();
+
+   
+    maxHeap.performReheapup();
+    std::cout << "Heap after reheapdown: ";
+    maxHeap.printHeap();
+
+    return 0;
+}

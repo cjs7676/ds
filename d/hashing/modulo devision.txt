@@ -1,0 +1,56 @@
+
+--------------------
+#include<iostream>
+using namespace std;
+#define size 10
+int ht[size];
+void store(int x[], int n);
+int modulodivision(int key);
+int linearprobe(int address);
+int main()
+{
+int n, x[10];
+cout<<"";
+cout << "\nEnter the number of elements: ";
+cin >> n;
+cout << "\nEnter the elements:" << endl;
+for (int i = 0; i < n; i++)
+{
+cin >> x[i];
+}
+store(x, n);
+cout << "\nHashtable is as shown:" << endl;
+for (int i = 0; i < size; i++)
+{
+cout << ht[i] << " ";
+} return 0;
+}
+void store(int x[], int n)
+{
+int key, address;
+for (int i = 0; i < size; i++)
+ht[i] = -1;
+for (int i = 0; i < n; i++)
+{
+key = x[i];
+address = modulodivision(key);
+if (ht[address] != -1)
+address = linearprobe(address);
+ht[address] = key;
+}
+} int modulodivision(int key)
+{
+int address = (key % size) + 1;
+if (address == size)
+return 0;
+else
+return address;
+} int linearprobe(int address)
+{
+while (ht[address] != -1)
+{
+address++;
+if (address == size)
+address = 0;
+} return address;
+}
